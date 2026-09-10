@@ -585,6 +585,3 @@ Se definio el flujo de aprobacion para requerimientos:
 - Se agrego el modulo `Inventario > Inventario` para consultar existencias reales por almacen.
 - El almacenero ve solo existencias de su almacen asignado.
 - Administrador y jefe logistica ven el inventario general y pueden filtrar por almacen.
-
-
-yefri@transnel.pe password

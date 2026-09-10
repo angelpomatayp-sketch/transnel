@@ -35,4 +35,4 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction \
     && ln -sfn ../storage/app/public public/storage \
     && chmod -R ug+rw storage bootstrap/cache
 
-CMD ["sh", "-c", "export APP_URL=\"$(printf '%s' \"$APP_URL\" | tr -d '\\r\\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')\"; php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
+CMD ["sh", "-c", "export APP_URL=\"$(printf '%s' \"$APP_URL\" | tr -d '\\r\\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')\"; php artisan migrate --force; php artisan permission:cache-reset || true; php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
