@@ -95,14 +95,23 @@ export default function Index({ productos, familias, unidades, codigosSugeridos 
             return null;
         }
 
-        return row.imagenes?.find((image) => image.principal) ?? row.imagenes?.[0] ?? null;
+        return row.imagenes?.find((image) => typeof image === 'object' && image.principal) ?? row.imagenes?.[0] ?? null;
     }
 
     function normalizeImages(images = []) {
-        return images.map((image, index) => ({
-            src: image.ruta ?? image.src,
-            title: image.nombre_original ?? image.title ?? `Imagen ${index + 1}`,
-        })).filter((image) => image.src);
+        return images.map((image, index) => {
+            if (typeof image === 'string') {
+                return {
+                    src: image.startsWith('/storage/') ? image : `/storage/${image}`,
+                    title: `Imagen ${index + 1}`,
+                };
+            }
+
+            return {
+                src: image.ruta ?? image.src ?? (image.path ? `/storage/${image.path}` : null),
+                title: image.nombre_original ?? image.title ?? `Imagen ${index + 1}`,
+            };
+        }).filter((image) => image.src);
     }
 
     function openImageViewer(images = [], title = 'Producto', index = 0) {

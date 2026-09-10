@@ -305,13 +305,25 @@ class ProductoController extends Controller
     {
         if ($producto?->imagenes) {
             foreach ($producto->imagenes as $image) {
-                Storage::disk('public')->delete($image);
+                Storage::disk('public')->delete(is_array($image) ? ($image['path'] ?? $image['ruta'] ?? '') : $image);
             }
         }
 
         return collect($request->file('imagenes', []))
             ->take(4)
-            ->map(fn ($image) => $image->store('productos', 'public'))
+            ->map(function ($image, int $index) {
+                $path = $image->store('productos', 'public');
+
+                return [
+                    'path' => $path,
+                    'ruta' => Storage::url($path),
+                    'src' => Storage::url($path),
+                    'nombre_original' => $image->getClientOriginalName(),
+                    'mime' => $image->getClientMimeType(),
+                    'tamano' => $image->getSize(),
+                    'principal' => $index === 0,
+                ];
+            })
             ->values()
             ->all();
     }
